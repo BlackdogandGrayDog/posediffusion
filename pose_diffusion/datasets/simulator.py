@@ -231,8 +231,8 @@ class SimulatorDataset(Dataset):
             cameras = PerspectiveCameras(
                 focal_length=new_fls.numpy(),
                 principal_point=new_pps.numpy(),
-                R=[anno["R"] for anno in annos],
-                T=[anno["T"] for anno in annos],
+                R=np.stack([anno["R"] for anno in annos]),
+                T=np.stack([anno["T"] for anno in annos]),
             )
             norm_cameras = normalize_cameras(
                 cameras,

@@ -132,6 +132,7 @@ pip install setuptools==69.5.1 --force-reinstall
 pip install omegaconf opencv-python einops
 pip install visdom --no-build-isolation
 pip install accelerate==0.24.0
+pip install hydra-core --upgrade
 ```
 
 ✅ Check:
@@ -206,6 +207,7 @@ python -c "import pycolmap; print(pycolmap.__version__)"
 ```bash
 pip install gdown matplotlib plotly h5py
 pip install git+https://github.com/cvg/LightGlue --no-deps
+pip install contourpy fonttools importlib-resources kiwisolver python-dateutil pyparsing cycler
 ```
 
 ---

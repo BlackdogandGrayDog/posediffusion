@@ -171,6 +171,35 @@ def set_seed_and_print(seed):
 
 
 class VizStats(Stats):
+    def get_status_string(self, stat_set="train", max_it=None):
+        """Compatibility shim: pytorch3d versions differ on this method name/signature."""
+        # Try the base class first
+        if hasattr(super(), "get_status_string"):
+            try:
+                return super().get_status_string(stat_set=stat_set, max_it=max_it)
+            except TypeError:
+                try:
+                    return super().get_status_string(stat_set)
+                except Exception:
+                    pass
+        # Fallback: build a simple status string from current stats
+        parts = [f"[{stat_set}]"]
+        if stat_set in self.stats:
+            for k, v in self.stats[stat_set].items():
+                try:
+                    val = v.get_last()
+                    if val is not None:
+                        parts.append(f"{k}: {val:.4f}")
+                except Exception:
+                    pass
+        if max_it is not None:
+            try:
+                it = self.it.get(stat_set, 0)
+                parts.append(f"it: {it}/{max_it}")
+            except Exception:
+                pass
+        return "  ".join(parts)
+
     def plot_stats(self, viz=None, visdom_env=None, plot_file=None, visdom_server=None, visdom_port=None):
         # use the cached visdom env if none supplied
         if visdom_env is None:
