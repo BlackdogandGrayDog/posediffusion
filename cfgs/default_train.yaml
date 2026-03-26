@@ -10,6 +10,10 @@ train:
     # Should point to the folder containing sequence subfolders with gt_cameras.npz
     SIMULATOR_DIR: "pose_diffusion/samples"
 
+    # Which sequences to use for training. null = use all sequences in SIMULATOR_DIR.
+    # Example: seq_names: ["rigid_0"]  or  seq_names: ["rigid_0", "non_rigid_0"]
+    seq_names: ["rigid_0"]
+
     # Co3D paths (used when dataset_type=co3d)
     CO3D_DIR: "/datasets01/co3dv2/080422/"
     CO3D_ANNOTATION_DIR: "/fsx-repligen/jianyuan/datasets/co3d_relpose/"
@@ -22,30 +26,30 @@ train:
     resume_ckpt: False
     epochs: 50
     ckpt_interval: 5
-    num_workers: 4
+    num_workers: 8        # A6000服务器 CPU核多，加到8
 
     eval_interval: 5
 
     print_interval: 10
 
-    len_train: 500        # 原来 16384，对小数据集没意义
-    len_eval: 50          # 原来 256
+    len_train: 500
+    len_eval: 50
 
-    max_images: 32        # 原来 512，直接影响显存和速度
+    max_images: 64        # A6000 48GB显存，从20提到64
     normalize_cameras: True
     persistent_workers: True
 
-    pin_memory: False
+    pin_memory: True      # Linux服务器开True，CPU→GPU传输更快
     clip_grad: 1.0
-    preload_image: False
-    cudnnbenchmark: True  # 开启可以加速
+    preload_image: True   # 50张图全进RAM，之后读取零开销
+    cudnnbenchmark: True
     first_camera_transform: True
     min_num_images: 10
-    images_per_seq: [3, 10]  # 原来 [3, 51]，我们序列只有几十帧
+    images_per_seq: [5, 20]
     compute_optical: True
     color_aug: True
     erase_aug: False
-    batch_repeat: 5       # 原来 90，这个最影响速度和显存
+    batch_repeat: 20      # 显存大了，从5提到20，更充分利用GPU
 
 debug: False
 

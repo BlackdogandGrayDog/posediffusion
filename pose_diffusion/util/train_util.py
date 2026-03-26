@@ -125,8 +125,10 @@ def get_simulator_dataset(cfg):
     data_dir = cfg.train.SIMULATOR_DIR
     if not os.path.isabs(data_dir):
         data_dir = os.path.join(get_original_cwd(), data_dir)
+    seq_names = list(cfg.train.seq_names) if getattr(cfg.train, "seq_names", None) else None
     common_params = {
         "data_dir":               data_dir,
+        "seq_names":              seq_names,
         "img_size":               cfg.train.img_size,
         "normalize_cameras":      cfg.train.normalize_cameras,
         "first_camera_transform": cfg.train.first_camera_transform,

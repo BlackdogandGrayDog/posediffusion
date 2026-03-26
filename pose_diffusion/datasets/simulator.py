@@ -32,6 +32,7 @@ class SimulatorDataset(Dataset):
         self,
         data_dir,                       # root dir containing sequence subfolders
         split="train",                  # "train" or "test"
+        seq_names=None,                 # list of sequence names to use, None = use all
         train_split_ratio=0.9,          # fraction of sequences used for train
         img_size=224,
         eval_time=False,
@@ -87,6 +88,12 @@ class SimulatorDataset(Dataset):
             if osp.isdir(osp.join(data_dir, d))
             and osp.exists(osp.join(data_dir, d, "gt_cameras.npz"))
         ])
+
+        # filter to only requested sequences if specified
+        if seq_names:
+            all_seqs = [s for s in all_seqs if s in seq_names]
+            if len(all_seqs) == 0:
+                raise FileNotFoundError(f"None of the requested seq_names {seq_names} found in {data_dir}")
 
         if len(all_seqs) == 0:
             raise FileNotFoundError(f"No valid sequence folders (with gt_cameras.npz) found in {data_dir}")

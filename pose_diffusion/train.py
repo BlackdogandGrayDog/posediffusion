@@ -51,17 +51,8 @@ def train_fn(cfg: DictConfig):
 
     set_seed_and_print(cfg.seed)
 
-    # Visualization setup (visdom is optional)
+    # Visualization setup (visdom disabled, using HTML export instead)
     viz = None
-    if accelerator.is_main_process:
-        try:
-            import logging
-            from visdom import Visdom
-            logging.getLogger("visdom").setLevel(logging.ERROR)
-            logging.getLogger("websocket").setLevel(logging.ERROR)
-            viz = Visdom(raise_exceptions=True)
-        except Exception:
-            print("Warning: visdom not available, skipping live visualization")
 
     # Data loading
     dataset_type = getattr(cfg.train, "dataset_type", "co3d")
