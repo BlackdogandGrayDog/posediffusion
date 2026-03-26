@@ -1,6 +1,7 @@
-image_folder: samples/apple
-image_size: 224
-ckpt: co3d_model1.pth
+image_folder: samples/rigid_0
+image_size: 336
+# ckpt: ckpts/co3d_model_Apr16.pth
+ckpt: ckpts/re10K_img336_v2.bin
 seed: 0
 
 GGS:

@@ -24,6 +24,7 @@ from util.train_util import (
     VizStats,
     WarmupCosineRestarts,
     get_co3d_dataset,
+    get_simulator_dataset,
     plotly_scene_visualization,
     set_seed_and_print,
     view_color_coded_images_for_visdom,
@@ -45,20 +46,24 @@ def train_fn(cfg: DictConfig):
 
     set_seed_and_print(cfg.seed)
 
-    # Visualization setup
+    # Visualization setup (visdom is optional)
+    viz = None
     if accelerator.is_main_process:
         try:
+            import logging
             from visdom import Visdom
-
-            viz = Visdom()
-            # cams_show = {"ours_pred": pred_cameras, "ours_pred_aligned": pred_cameras_aligned, "gt_cameras": gt_cameras}
-            # fig = plot_scene({f"{folder_path}": cams_show})
-            # viz.plotlyplot(fig, env="visual", win="cams")
-        except:
-            print("Warning: please check your visdom connection for visualization")
+            logging.getLogger("visdom").setLevel(logging.ERROR)
+            logging.getLogger("websocket").setLevel(logging.ERROR)
+            viz = Visdom(raise_exceptions=True)
+        except Exception:
+            print("Warning: visdom not available, skipping live visualization")
 
     # Data loading
-    dataset, eval_dataset = get_co3d_dataset(cfg)
+    dataset_type = getattr(cfg.train, "dataset_type", "co3d")
+    if dataset_type == "simulator":
+        dataset, eval_dataset = get_simulator_dataset(cfg)
+    else:
+        dataset, eval_dataset = get_co3d_dataset(cfg)
     dataloader = get_dataloader(cfg, dataset)
     eval_dataloader = get_dataloader(cfg, eval_dataset, is_eval=True)
 

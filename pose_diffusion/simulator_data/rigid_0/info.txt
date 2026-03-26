@@ -1,0 +1,43 @@
+Config Summary
+
+[Save / Load / Reset]
+Save Settings
+Load Settings
+Reset to Default Settings
+
+[Capture]
+Trip Duration sec: 250
+Shots per sec: 15
+Shots Resolution: 224 x 224
+Save Directory: D:\ICL\phd\git_repo\PoseDiffusion\pose_diffusion\...
+
+[Material]
+Hue: 0
+Saturation: 60
+Value: 100
+Wetness: 85
+Vessel Size: 60
+Vessel Opacity: 30
+
+[Light]
+Angle: 150
+Intensity: 55
+Distance: 60
+Shadow: Enabled
+
+[Dynamic]
+Enable: Off
+Speed: 20
+Scale: 30
+Intensity: 50
+
+[Camera]
+Field of View: 74
+Focal Length: 4.969783
+Stereo Camera: Off
+Lenses Distance: 1.5
+
+[Effects]
+Vignette: Off
+Bloom: Off
+Grain: 0

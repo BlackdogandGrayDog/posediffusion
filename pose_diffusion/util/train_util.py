@@ -19,6 +19,8 @@ from pytorch3d.implicitron.tools.stats import Stats
 from pytorch3d.vis.plotly_vis import plot_scene
 from pytorch3d.implicitron.tools.vis_utils import get_visdom_connection
 from datasets.co3d_v2 import Co3dDataset
+from datasets.simulator import SimulatorDataset
+from hydra.utils import get_original_cwd
 
 
 logger = logging.getLogger(__name__)
@@ -115,6 +117,26 @@ def get_co3d_dataset(cfg):
     # Create the eval dataset
     eval_dataset = Co3dDataset(**common_params, split="test", eval_time=True)
 
+    return dataset, eval_dataset
+
+
+def get_simulator_dataset(cfg):
+    import os
+    data_dir = cfg.train.SIMULATOR_DIR
+    if not os.path.isabs(data_dir):
+        data_dir = os.path.join(get_original_cwd(), data_dir)
+    common_params = {
+        "data_dir":               data_dir,
+        "img_size":               cfg.train.img_size,
+        "normalize_cameras":      cfg.train.normalize_cameras,
+        "first_camera_transform": cfg.train.first_camera_transform,
+        "min_num_images":         cfg.train.min_num_images,
+        "compute_optical":        cfg.train.compute_optical,
+        "color_aug":              cfg.train.color_aug,
+        "erase_aug":              cfg.train.erase_aug,
+    }
+    dataset      = SimulatorDataset(**common_params, split="train")
+    eval_dataset = SimulatorDataset(**common_params, split="test", eval_time=True)
     return dataset, eval_dataset
 
 

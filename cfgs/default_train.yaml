@@ -3,10 +3,17 @@ exp_name: exp001_train
 exp_dir: "name_your_own"
 
 train:
-    # Please Specify Your Own Path
+    # "co3d" or "simulator"
+    dataset_type: "simulator"
+
+    # Simulator dataset path (used when dataset_type=simulator)
+    # Should point to the folder containing sequence subfolders with gt_cameras.npz
+    SIMULATOR_DIR: "pose_diffusion/samples"
+
+    # Co3D paths (used when dataset_type=co3d)
     CO3D_DIR: "/datasets01/co3dv2/080422/"
     CO3D_ANNOTATION_DIR: "/fsx-repligen/jianyuan/datasets/co3d_relpose/"
-    
+
 
     img_size: 224
     category: seen
@@ -33,7 +40,7 @@ train:
     preload_image: False
     cudnnbenchmark: False
     first_camera_transform: True
-    min_num_images: 50
+    min_num_images: 10
     images_per_seq: [3, 51]
     compute_optical: True
     color_aug: True

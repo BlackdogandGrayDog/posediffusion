@@ -30,7 +30,6 @@ from util.match_extraction import extract_match
 from util.load_img_folder import load_and_preprocess_images
 from util.geometry_guided_sampling import geometry_guided_sampling
 from util.metric import compute_ARE
-from visdom import Visdom
 
 
 @hydra.main(config_path="../cfgs/", config_name="default")
@@ -136,16 +135,16 @@ def demo(cfg: DictConfig) -> None:
 
 
     # Visualization
-    try:
-        viz = Visdom()
-
+    if os.path.exists(os.path.join(folder_path, "gt_cameras.npz")):
         cams_show = {"ours_pred": pred_cameras, "ours_pred_aligned": pred_cameras_aligned, "gt_cameras": gt_cameras}
+    else:
+        cams_show = {"ours_pred": pred_cameras}
 
-        fig = plot_scene({f"{folder_path}": cams_show})
+    fig = plot_scene({f"{folder_path}": cams_show})
 
-        viz.plotlyplot(fig, env="visual", win="cams")
-    except:
-        print("Please check your visdom connection")
+    html_path = os.path.join(original_cwd, "camera_vis.html")
+    fig.write_html(html_path)
+    print(f"Saved interactive visualization to: {html_path}")
 
 
 
