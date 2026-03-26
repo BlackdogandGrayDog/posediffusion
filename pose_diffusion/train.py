@@ -4,12 +4,17 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+import logging
 import os
 import time
 from collections import OrderedDict
 from functools import partial
 from typing import Dict, List, Optional, Union
 from multiprocessing import Pool
+
+# suppress visdom/websocket reconnect noise
+logging.getLogger("visdom").setLevel(logging.CRITICAL)
+logging.getLogger("websocket").setLevel(logging.CRITICAL)
 
 import hydra
 import torch
