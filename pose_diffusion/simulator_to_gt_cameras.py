@@ -169,16 +169,18 @@ def convert_to_samples(data_dir: Path, samples_root: Path = None):
 
 if __name__ == "__main__":
     script_dir = Path(__file__).parent
+    sim_root = script_dir / "simulator_data"
 
-    if len(sys.argv) < 2:
-        # default: process all sequences under simulator_data/
-        sim_root = script_dir / "simulator_data"
+    # ── specify which sequences to process ───────────────────────────────────
+    # Set to None to process ALL sequences under simulator_data/
+    # Or list specific names, e.g. ["rigid_0"] or ["rigid_0", "non_rigid_0"]
+    SEQ_NAMES = ["non_rigid_0"]
+    # ─────────────────────────────────────────────────────────────────────────
+
+    if SEQ_NAMES is None:
         sequences = sorted(p for p in sim_root.iterdir() if p.is_dir())
-        if not sequences:
-            print(f"No subdirectories found in {sim_root}")
-            sys.exit(1)
     else:
-        sequences = [Path(sys.argv[1])]
+        sequences = [sim_root / name for name in SEQ_NAMES]
 
     for seq in sequences:
         print(f"\n{'='*50}")
