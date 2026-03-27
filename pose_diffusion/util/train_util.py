@@ -174,33 +174,25 @@ def set_seed_and_print(seed):
 
 class VizStats(Stats):
     def get_status_string(self, stat_set="train", max_it=None):
-        """Compatibility shim: pytorch3d versions differ on this method name/signature."""
-        # Try the base class first
-        if hasattr(super(), "get_status_string"):
-            try:
-                return super().get_status_string(stat_set=stat_set, max_it=max_it)
-            except TypeError:
-                try:
-                    return super().get_status_string(stat_set)
-                except Exception:
-                    pass
-        # Fallback: build a simple status string from current stats
-        parts = [f"[{stat_set}]"]
+        """Always build status string directly from stats dict for consistent output."""
+        it = self.it.get(stat_set, 0) if hasattr(self, "it") else 0
+        header = f"[{stat_set}]  it: {it}/{max_it}" if max_it is not None else f"[{stat_set}]"
+        parts = [header]
         if stat_set in self.stats:
             for k, v in self.stats[stat_set].items():
                 try:
-                    val = v.get_last()
+                    # pytorch3d Stats stores values differently across versions
+                    if hasattr(v, "get_last"):
+                        val = v.get_last()
+                    elif hasattr(v, "values") and len(v.values) > 0:
+                        val = v.values[-1]
+                    else:
+                        val = float(v)
                     if val is not None:
                         parts.append(f"{k}: {val:.4f}")
                 except Exception:
                     pass
-        if max_it is not None:
-            try:
-                it = self.it.get(stat_set, 0)
-                parts.append(f"it: {it}/{max_it}")
-            except Exception:
-                pass
-        return "  ".join(parts)
+        return " | ".join(parts)
 
     def plot_stats(self, viz=None, visdom_env=None, plot_file=None, visdom_server=None, visdom_port=None):
         # use the cached visdom env if none supplied
