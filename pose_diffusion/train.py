@@ -241,7 +241,15 @@ def _train_or_eval_fn(
 
         stats.update(predictions, time_start=time_start, stat_set=stat_set)
         if step % cfg.train.print_interval == 0:
-            accelerator.print(stats.get_status_string(stat_set=stat_set, max_it=max_it))
+            loss_val = predictions["loss"].item() if training else 0.0
+            racc5  = predictions.get("Racc_5",  torch.tensor(0.0)).item()
+            racc15 = predictions.get("Racc_15", torch.tensor(0.0)).item()
+            racc30 = predictions.get("Racc_30", torch.tensor(0.0)).item()
+            auc30  = predictions.get("Auc_30",  torch.tensor(0.0)).item()
+            accelerator.print(
+                f"[{stat_set}] it: {step}/{max_it} | loss: {loss_val:.4f} | "
+                f"Racc5: {racc5:.3f} | Racc15: {racc15:.3f} | Racc30: {racc30:.3f} | Auc30: {auc30:.3f}"
+            )
 
         if training:
             optimizer.zero_grad()
