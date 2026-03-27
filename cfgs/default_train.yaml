@@ -1,6 +1,6 @@
 seed: 0
-exp_name: exp001_train
-exp_dir: "name_your_own"
+exp_name: non_rigid_0_train
+exp_dir: "non_rigid_0_train"
 
 train:
     # "co3d" or "simulator"
@@ -12,7 +12,7 @@ train:
 
     # Which sequences to use for training. null = use all sequences in SIMULATOR_DIR.
     # Example: seq_names: ["rigid_0"]  or  seq_names: ["rigid_0", "non_rigid_0"]
-    seq_names: ["rigid_0"]
+    seq_names: ["non_rigid_0"]
 
     # Co3D paths (used when dataset_type=co3d)
     CO3D_DIR: "/datasets01/co3dv2/080422/"
