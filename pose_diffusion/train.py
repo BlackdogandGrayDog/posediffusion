@@ -110,17 +110,20 @@ def train_fn(cfg: DictConfig):
         model, dataloader, optimizer, lr_scheduler
     )
 
-    start_epoch = cfg.train.get("start_epoch", 0)
-    if cfg.train.get("resume_dir", None):
-        accelerator.load_state(cfg.train.resume_dir)
-        accelerator.print(f"Successfully resumed full state from {cfg.train.resume_dir}")
-    elif cfg.train.resume_ckpt:
-        checkpoint = torch.load(cfg.train.resume_ckpt)
-        try:
-            model.load_state_dict(prefix_with_module(checkpoint), strict=True)
-        except Exception:
-            model.load_state_dict(checkpoint, strict=True)
-        accelerator.print(f"Successfully resumed from {cfg.train.resume_ckpt}")
+    start_epoch = 0
+    if cfg.train.resume_ckpt:
+        resume_dir = cfg.train.get("resume_dir", None)
+        if resume_dir:
+            accelerator.load_state(resume_dir)
+            start_epoch = cfg.train.get("start_epoch", 0)
+            accelerator.print(f"Successfully resumed full state from {resume_dir}, start_epoch={start_epoch}")
+        else:
+            checkpoint = torch.load(cfg.train.resume_ckpt)
+            try:
+                model.load_state_dict(prefix_with_module(checkpoint), strict=True)
+            except Exception:
+                model.load_state_dict(checkpoint, strict=True)
+            accelerator.print(f"Successfully resumed from {cfg.train.resume_ckpt}")
 
     stats      = VizStats(("loss", "lr", "sec/it", "Auc_30", "Racc_5", "Racc_15", "Racc_30",
                            "Tacc_5", "Tacc_15", "Tacc_30"))
