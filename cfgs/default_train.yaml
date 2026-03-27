@@ -24,7 +24,9 @@ train:
     restart_num: 10
     lr: 0.0001
     resume_ckpt: False
-    epochs: 50
+    resume_dir: "outputs/2026-03-27/00-27-35/name_your_own/ckpt_000049"
+    start_epoch: 49
+    epochs: 249
     ckpt_interval: 5
     num_workers: 8        # A6000服务器 CPU核多，加到8
 
